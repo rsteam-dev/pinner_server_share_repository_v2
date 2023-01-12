@@ -1,0 +1,108 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model eamil_auth_number {
+  eth_idx    Int    @id @default(autoincrement())
+  eth_email  String @unique(map: "eamil_auth_number_auth_email_key") @default("") @db.VarChar(255)
+  eth_number String @db.VarChar(255)
+  eth_flag   Int    @default(0) @db.TinyInt
+
+  @@unique([eth_email, eth_flag], map: "email_auth_number_auth_email_auth_flag_key")
+  @@unique([eth_email, eth_number], map: "email_auth_number_auth_email_auth_number")
+}
+
+model findpw_auth_number {
+  pth_idx    Int    @id @default(autoincrement())
+  pth_email  String @unique(map: "eamil_auth_number_auth_email_key") @default("") @db.VarChar(255)
+  pth_number String @db.VarChar(255)
+  pth_flag   Int    @default(0) @db.TinyInt
+
+  @@unique([pth_email, pth_flag], map: "email_auth_number_auth_email_auth_flag_key")
+  @@unique([pth_email, pth_number], map: "email_auth_number_auth_email_auth_number")
+}
+
+model member {
+  mem_idx           Int       @id @default(autoincrement())
+  mem_name          String    @default("") @db.VarChar(100)
+  mem_email         String    @default("") @db.VarChar(255)
+  mem_password      String    @default("") @db.VarChar(255)
+  mem_deletion      Boolean   @default(false)
+  mem_ins_datetime  DateTime  @db.DateTime(0)
+  mem_upd_datetime  DateTime? @db.DateTime(0)
+  mem_del_datetime  DateTime? @db.DateTime(0)
+  mem_auth_level    Int       @default(0)
+  mem_refresh_token String    @default("") @db.VarChar(255)
+  mem_active        Boolean   @default(false)
+  mem_auth_datetime DateTime? @db.DateTime(0)
+
+  @@unique([mem_idx, mem_deletion])
+  @@unique([mem_name, mem_email])
+  @@unique([mem_email, mem_deletion], map: "memeber_mem_email_mem_deletion_key")
+}
+
+model login_log {
+  mll_idx      Int      @id @default(autoincrement())
+  mll_success  Boolean
+  mll_mem_idx  Int?
+  mll_email    String   @db.VarChar(255)
+  mll_datetime DateTime @db.DateTime(0)
+  mll_reason   String   @db.VarChar(255)
+  mll_ip       String   @db.VarChar(255)
+}
+
+model annual_forest {
+  anf_idx          Int       @id @default(autoincrement())
+  mem_idx          Int
+  upd_mem_idx      Int?
+  anf_year         Int
+  anf_name         String    @db.Text
+  anf_shp          String    @db.Text
+  anf_shpname      String?   @db.Text
+  anf_deletion     Boolean   @default(false)
+  anf_ins_datetime DateTime  @db.DateTime(0)
+  anf_upd_datetime DateTime? @db.DateTime(0)
+  anf_del_datetime DateTime? @db.DateTime(0)
+}
+
+model system {
+  sys_idx            Int     @id @default(autoincrement())
+  sys_geoserver_info String? @db.Text
+  sys_nas_info       String? @db.Text
+  sys_mqtt_info      String? @db.Text
+  sys_mysql_info     String? @db.Text
+}
+
+model label_group {
+  lbg_idx          Int       @id @default(autoincrement())
+  mem_idx          Int
+  lbg_name         String    @db.VarChar(255)
+  lbg_deletion     Boolean   @default(false)
+  lbg_ins_datetime DateTime  @db.DateTime(0)
+  lbg_upd_datetime DateTime? @db.DateTime(0)
+  lbg_del_datetime DateTime? @db.DateTime(0)
+  lbg_labels       String?   @db.LongText
+}
+
+model inspect {
+  inp_idx          Int       @id @default(autoincrement())
+  mem_idx          Int
+  inp_path         String    @db.VarChar(255)
+  inp_status       Boolean   @default(false)
+  inp_ins_datetime DateTime  @db.DateTime(0)
+  inp_suc_datetime DateTime? @db.DateTime(0)
+}
+
+model work {
+  wrk_idx          Int       @id @default(autoincrement())
+  mem_idx          Int
+  wrk_path         String    @db.VarChar(255)
+  wrk_status       Boolean   @default(false)
+  wrk_ins_datetime DateTime  @db.DateTime(0)
+  wrk_suc_datetime DateTime? @db.DateTime(0)
+}
